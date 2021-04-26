@@ -1,7 +1,5 @@
 FROM python:3-alpine
 
-RUN apk add --update --no-cache jq
-
 RUN mkdir /app
 WORKDIR /app
 

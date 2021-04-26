@@ -273,8 +273,6 @@ while True:
         if task_state == 'STOPPED':
             logger.info("Task has stopped")
 
-            pprint(tasks)
-
             none_zero_exit_code = False
             for container in tasks['tasks'][0]['containers']:
                 if container['exitCode'] != 0:
