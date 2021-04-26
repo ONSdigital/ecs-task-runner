@@ -1,7 +1,6 @@
 FROM python:3-alpine
 
-RUN apk add --update --no-cache --virtual .build-dependencies jq \
-  && apk del .build-dependencies
+RUN apk add --update --no-cache jq
 
 RUN mkdir /app
 WORKDIR /app
