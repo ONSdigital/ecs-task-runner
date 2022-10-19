@@ -31,7 +31,7 @@ docker run -it --rm \
 -e SECURITY_GROUPS="sg-4f97de25,sg-01b7f38dc1ef5d7cc" \
 -e AWS_ROLE="arn:aws:iam::123456789876:role/admin-role" \
 -e PUBLIC_IP="ENABLED" \
-onsdigital/spp-ecs-task-runner:1
+public.ecr.aws/ons-spp/ecs-task-runner:1
 ```
 
 ## License
