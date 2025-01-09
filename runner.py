@@ -185,7 +185,7 @@ if len(containers) > 4:
     exit(1)
 
 logger.info("Using the following containers: %s" % containers)
-
+logger.debug("Using the following container overrides: %s" % container_overrides)
 
 # --------------------------------
 # Create & start the task
@@ -202,7 +202,7 @@ task = ecs_client.run_task(
             "assignPublicIp": public_ip,
         }
     },
-    containerOverrides={"containerOverrides": container_overrides},
+    overrides={"containerOverrides": container_overrides},
 )
 
 try:
