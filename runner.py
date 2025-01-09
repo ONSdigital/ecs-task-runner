@@ -304,10 +304,11 @@ while True:
 
     except botocore.exceptions.ClientError as e:
         logger.warning(
-            Fore.RED + 'Non-terminal exception seen whilst checking logs (%s). The request will be retried.' % e)
+            Fore.RED + "Non-terminal exception seen whilst checking logs (%s). The request will be retried." % e)
 
         if exceptions >= 100:
             logger.critical("Too many exceptions; exiting.")
             exit(1)
 
         exceptions = exceptions + 1
+        
