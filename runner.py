@@ -133,7 +133,7 @@ else:
     log_client = boto3.client('logs')
 
 environment = []
-container_override_str = os,os.environ.get('CONTAINER_OVERRIDE', '')
+container_override_str = os.environ.get('CONTAINER_OVERRIDE', '')
 if container_override_str:
     try:
         container_overrides_dict = json.loads(container_override_str)
