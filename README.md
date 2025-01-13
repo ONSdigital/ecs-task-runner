@@ -17,6 +17,7 @@ All inputs are passed via environment variables.
 - **PUBLIC_IP**: Whether the task's elastic network interface receives a public IP address. Either `DISABLED` or `ENABLED`. Defaults to `DISABLED`.
 ### Optional
 - **AWS_ROLE**: The ARN of a role to assume whilst triggering the task
+- **CONTAINER_OVERRIDE**: A JSON string representing a dictionary of environment variables to pass to the ECS task.
 
 ## Example
 To trigger a task
@@ -31,6 +32,7 @@ docker run -it --rm \
 -e SECURITY_GROUPS="sg-4f97de25,sg-01b7f38dc1ef5d7cc" \
 -e AWS_ROLE="arn:aws:iam::123456789876:role/admin-role" \
 -e PUBLIC_IP="ENABLED" \
+-e CONTAINER_OVERRIDE='{"INSTANCE_ID":"1", "ENV_VAR":"1"}' \
 public.ecr.aws/ons-spp/ecs-task-runner:1
 ```
 

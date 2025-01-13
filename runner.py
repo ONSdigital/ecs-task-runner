@@ -38,6 +38,7 @@
 #
 # -----------------------------------------------------------
 import os
+import json
 import boto3
 import boto3.session
 from boto3 import Session
@@ -131,6 +132,16 @@ else:
     ecs_client = boto3.client('ecs')
     log_client = boto3.client('logs')
 
+environment = []
+container_override_str = os.environ.get('CONTAINER_OVERRIDE', '')
+if container_override_str:
+    try:
+        container_overrides_dict = json.loads(container_override_str)
+        for key, value in container_overrides_dict.items():
+            environment.append({"name": key, "value": value})
+    except json.JSONDecodeError as e:
+        logger.critical('Invalid CONTAINER_OVERRIDE format, must be a valid JSON string: %s' % e)
+        exit(105)
 
 # --------------------------------
 # Sense check the Task definition
@@ -143,8 +154,16 @@ task_definition = ecs_client.describe_task_definition(
 # The above throws an exception if the task definition cannot be found, so won't check any further here
 
 containers = []
+container_overrides = []
 
 for container in task_definition['taskDefinition']['containerDefinitions']:
+    if len(environment) > 0:
+        container_overrides.append(
+            {
+                "name": container["name"],
+                "environment": environment,
+            }
+        )
     containers.append({
         'name': container['name'],
         'log_group': container['logConfiguration']['options']['awslogs-group'],
@@ -160,7 +179,7 @@ if len(containers) > 4:
     exit(1)
 
 logger.info("Using the following containers: %s" % containers)
-
+logger.debug("Using the following container overrides: %s" % container_overrides)
 
 # --------------------------------
 # Create & start the task
@@ -176,7 +195,8 @@ task = ecs_client.run_task(
             'securityGroups': security_groups.split(','),
             'assignPublicIp': public_ip
         }
-    }
+    },
+    overrides={"containerOverrides": container_overrides},
 )
 
 try:
