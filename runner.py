@@ -38,6 +38,7 @@
 #
 # -----------------------------------------------------------
 import os
+import json
 import boto3
 import boto3.session
 from boto3 import Session
@@ -132,11 +133,15 @@ else:
     log_client = boto3.client('logs')
 
 environment = []
-for key, value in os.environ.items():
-    prefix = "CONTAINER_OVERRIDE_"
-    prefix_len = len(prefix)
-    if key.startswith(prefix):
-        environment.append({"name": key[prefix_len:], "value": value})
+container_override_str = os,os.environ.get('CONTAINER_OVERRIDE', '')
+if container_override_str:
+    try:
+        container_overrides_dict = json.loads(container_override_str)
+        for key, value in container_overrides_dict.items():
+            environment.append({"name": key, "value": value})
+    except json.JSONDecodeError as e:
+        logger.critical('Invalid CONTAINER_OVERRIDE format, must be a valid JSON string: %s' % e)
+        exit(105)
 
 # --------------------------------
 # Sense check the Task definition
